@@ -1,0 +1,128 @@
+const express = require('express');
+var router = express.Router();
+const Student = require("../models/student")
+const Category =require("../models/categorymodel")
+// const mongoose = require('mongoose');
+// const Employee = mongoose.model('Employee');
+
+
+// const Student = require("../models/employee.model")
+
+
+
+
+router.get('/', (req, res) => {
+    res.send({
+        type:"GET"
+    });
+        
+    });
+
+
+router.post('/register', function(req, res,next){
+    Student.create(req.body).then(function(student){
+        res.send(student);
+        
+    }).catch(next);
+   
+});
+
+
+
+router.post("/login", function(req, res, next){
+    var name = req.body.name;
+    var password = req.body.password;
+   
+    Student.findOne({password : password , name : name})
+    .then(user =>{
+        if(user)
+        {
+              res.send(user)
+        }else
+        {
+            
+                res.send("No user Exist");
+        }
+
+    }).catch(err =>{
+        console.log(err);
+    });
+})
+
+
+router.post("/register/category",(req, res, next)=>{
+    var email = req.body.email;
+    Student.findOne({email : email})
+    .then(user =>{
+        if(user)
+        {
+            Category.create(req.body).then(function(category){
+                res.send(category);
+        })
+    }  else
+        {
+            
+                res.send("No user Exist");
+        }
+
+    }).catch(err =>{
+        console.log(err);
+    });
+    // Category.create(req.body).then(function(category){
+    //     res.send(category);
+    // })
+
+})
+
+
+
+router.delete('/:id', (req, res) => {
+    Student.findByIdAndRemove({_id:req.params.id}).then(function(student){
+    
+    res.send(student);
+        
+    });
+
+});
+
+router.put('/:id', (req, res) => {
+    Student.findByIdAndUpdate({_id:req.params.id},req.body).then(function(student){
+        Student.findOne({_id:req.params.id}).then(function(student){
+            res.send(student);
+        })
+    });
+        
+    });
+    
+
+
+// router.get('/list', (req, res) => {
+//     Employee.find((err, docs) => {
+//         if (!err) {
+//             res.render("employee/list", {
+//                 list: docs
+
+//             });
+//         }
+//         else {
+//             console.log('Error in retrieving employee list :' + err);
+//         }
+//     });
+// });
+
+module.exports = router;
+
+
+{
+	"name":"Abhimanyu Bhardwaj",
+	"email":"info4vivek@gmail.com",
+	"mobile":7084510666,
+	"password":"abhijeet"
+	
+}
+
+{
+    "pass_Category":"twitter",
+    "password":"tweet",
+    "email":"info4vivek@gmail.com"
+}
